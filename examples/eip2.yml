@@ -1,0 +1,8 @@
+apiVersion: kubeovn.io/v1
+kind: Eips
+metadata:
+  name: eip2
+spec:
+  deployment: nginx
+  namespace: default
+  ip: 192.168.124.11

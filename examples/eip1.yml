@@ -1,0 +1,8 @@
+apiVersion: kubeovn.io/v1
+kind: Eips
+metadata:
+  name: eip1
+spec:
+  deployment: testDeploy
+  namespace: ns1
+  ip: 192.168.124.11

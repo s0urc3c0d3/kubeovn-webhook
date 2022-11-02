@@ -1,0 +1,65 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: eips.kubeovn.io
+spec:
+  conversion:
+    strategy: None
+  group: kubeovn.io
+  names:
+    kind: Eips
+    listKind: EipsList
+    plural: eips
+    shortNames:
+    - eips
+    singular: eips
+  scope: Cluster
+  versions:
+  - served: true
+    storage: true
+    additionalPrinterColumns:
+    - jsonPath: .spec.ip
+      name: IP
+      type: string
+    - jsonPath: .spec.deployment
+      name: Deployment
+      type: string
+    - jsonPath: .spec.namespace
+      name: Namespace
+      type: string
+    name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              deployment:
+                type: string
+              namespace:
+                type: string
+              ip:
+                type: string
+            type: object
+        type: object
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: eips-webhook
+rules:
+- apiGroups: ["kubeovn.io"]
+  resources: ["eips"]
+  verbs: ["list", "get"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pods-list
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: webhook
+roleRef:
+  kind: ClusterRole
+  name: eips-webhook
+  apiGroup: rbac.authorization.k8s.io

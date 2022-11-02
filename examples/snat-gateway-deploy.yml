@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: starter-backend
+  labels:
+    app: starter-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: starter-backend
+  template:
+    metadata:
+      labels:
+        app: starter-backend
+      annotations:
+        ovn.kubernetes.io/eip: 192.168.100.200
+    spec:
+      containers:
+      - name: backend
+        image: nginx:alpine
