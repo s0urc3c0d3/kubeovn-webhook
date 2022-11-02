@@ -1,25 +1,34 @@
-Przygotowanie kontenera
+# Przygotowanie kontenera
 
-cd src
-docker build -t webhook .
+```
+$ cd src
+$ docker build -t webhook .
+```
 
-Instalacja
-kubectl apply -f deployment.yml
-kubectl apply -f crds/eips.yml -f webhookmutate.yml
-kubectl --namespace=webhook create secret tls webhook-certs --cert=keys/server.crt --key=keys/server.key
+# Instalacja
+
+```
+$ kubectl apply -f deployment.yml
+$ kubectl apply -f crds/eips.yml -f webhookmutate.yml
+$ kubectl --namespace=webhook create secret tls webhook-certs --cert=keys/server.crt --key=keys/server.key
+```
 
 Jezeli potrzeba wymienic certy - trzeba wygenerowac nowe klucze do katalogu keys i podmienic cert w webhookmutate.yml oraz zaktualizowac secret/webhook-certs
 
-Przyklady uzycia
+# Przyklady uzycia
 
 Najpierw wgramy crdki
 
+```
 kubectl apply -f examples/eip1.yml -f examples/eip2.yml
+```
 
 Jeden z tych crd spowoduje dopisanie adnotacji od kubeovn do deploymentu nginx w namespace default:
-[root@k8sic1 ~]# kubectl create deploy --image=nginx nginx
+
+```
+$ kubectl create deploy --image=nginx nginx
 deployment.apps/nginx created
-[root@k8sic1 ~]# kubectl get deploy/nginx -o yaml
+$ kubectl get deploy/nginx -o yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -84,9 +93,11 @@ status:
   readyReplicas: 1
   replicas: 1
   updatedReplicas: 1
+```
 
 Jezeli jednak sprobujemy wgrac deployment z istniejaca adnotacja to webhook odrazu uwali taki deploymenmt:
 
-[root@k8sic1 ~]# kubectl apply -f examples/snat-gateway-deploy.yml 
+```
+$ kubectl apply -f examples/snat-gateway-deploy.yml 
 Error from server: error when creating "examples/snat-gateway-deploy.yml": admission webhook "webhook.webhook.svc" denied the request: KubeOVN EIP annotations are prohibited
-
+```
